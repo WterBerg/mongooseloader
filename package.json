@@ -1,6 +1,6 @@
 {
   "name": "@wrpterberg/mongooseloader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "loads all your schemas and models into mongoose for you.",
   "main": "loader.js",
   "scripts": {

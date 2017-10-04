@@ -1,7 +1,10 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    fs = require('fs');
+    fs = require('fs'),
+    path = require('path');
+
+var root = path.dirname(require.main.filename);
 
 var schemaSource = null,
     schemas = [],
@@ -11,13 +14,13 @@ var schemaSource = null,
 var loader = {};
 
 loader.LoadSchemas = function(source) {
-    if (!fs.existsSync(source)) {
+    schemaSource = path.resolve(root, source);
+
+    if (!fs.existsSync(schemaSource)) {
         throw new Error('Given source does not exist.');
     }
 
-    schemaSource = source;
-
-    var schemaFiles = fs.readdirSync(source, {encoding: 'utf8'});
+    var schemaFiles = fs.readdirSync(schemaSource, {encoding: 'utf8'});
 
     schemaFiles.forEach(function(file) {
         loadRequiredSchemasAndSchema(file);
@@ -26,13 +29,13 @@ loader.LoadSchemas = function(source) {
     return schemas;
 };
 loader.LoadModels = function(source) {
-    if (!fs.existsSync(source)) {
+    modelSource = path.resolve(root, source);
+
+    if (!fs.existsSync(modelSource)) {
         throw new Error('Given source does not exist.');
     }
 
-    modelSource = source;
-
-    var modelFiles = fs.readdirSync(source, {encoding: 'utf8'});
+    var modelFiles = fs.readdirSync(modelSource, {encoding: 'utf8'});
 
     modelFiles.forEach(function(file) {
         loadModel(file);
