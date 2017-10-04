@@ -1,0 +1,32 @@
+{
+  "name": "@wrpterberg/mongooseloader",
+  "version": "0.1.0",
+  "description": "loads all your schemas and models into mongoose for you.",
+  "main": "loader.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/WterBerg/mongooseloader.git"
+  },
+  "keywords": [
+    "mongo",
+    "mongoose",
+    "schema",
+    "model"
+  ],
+  "author": "Willem ter Berg <wrpterberg@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WterBerg/mongooseloader/issues"
+  },
+  "homepage": "https://github.com/WterBerg/mongooseloader#readme",
+  "dependencies": {
+    "mongoose": "^4.12.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.0"
+  }
+}
