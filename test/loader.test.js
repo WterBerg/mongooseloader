@@ -21,6 +21,11 @@ describe('mongooseloader', function() {
    });
    describe('LoadModels()', function() {
        it('should return an empty array when no models are found', noModels);
+       it('should throw an error when trying to load models from a invalid location', invalidModelLocation);
+       it('should ignore non-javascript files in the source directory', modelSourceContainsNonJavascriptFiles);
+       it('should throw an error when javascript files found do not follow the model template', throwsErrorOnInvalidModels);
+       it('should throw an error when no schema is found that corresponds to the model', validModelWithoutSchema);
+       it('should load models into mongoose and return its constructor', loadValidModelIntoMongoose);
    });
 });
 
@@ -154,4 +159,83 @@ function noModels() {
     loader = proxyquire('../loader.js', {'fs': stubFs, 'path': stubPath});
 
     assert.deepEqual(loader.LoadSchemas('./model', mongoose), []);
+}
+
+function invalidModelLocation() {
+    stubPath.resolve = function() {
+        return './a/path/that/does/not/exist';
+    };
+    loader = proxyquire('../loader.js', {'path': stubPath});
+
+    assert.throws(function() {loader.LoadModels('./model')}, Error);
+}
+
+function modelSourceContainsNonJavascriptFiles() {
+    stubPath.resolve = function() {
+        return './test/testfiles/model';
+    };
+    stubFs.readdirSync = function() {
+        return ['image.png'];
+    };
+    loader = proxyquire('../loader.js', {'fs': stubFs, 'path': stubPath});
+
+    assert.deepEqual(loader.LoadModels('./model', mongoose), []);
+}
+
+function throwsErrorOnInvalidModels() {
+    stubPath.resolve = function(source, file) {
+        if ('invalidModel.js' === file)
+            return './test/testfiles/model/invalidModel.js';
+
+        return './test/testfiles/model';
+    };
+    stubFs.readdirSync = function() {
+        return ['invalidModel.js'];
+    };
+    loader = proxyquire('../loader.js', {'fs': stubFs, 'path': stubPath});
+
+    assert.throws(function() {loader.LoadModels('./model')}, Error);
+}
+
+function validModelWithoutSchema() {
+    stubPath.resolve = function(source, file) {
+        if ('validModelNoSchema.js' === file)
+            return './test/testfiles/model/validModelNoSchema.js';
+
+        return './test/testfiles/model';
+    };
+    stubFs.readdirSync = function() {
+        return ['validModelNoSchema.js'];
+    };
+    loader = proxyquire('../loader.js', {'fs': stubFs, 'path': stubPath});
+
+    assert.throws(function() {loader.LoadModels('./model')}, Error);
+}
+
+function loadValidModelIntoMongoose() {
+    var i = 0;
+    stubPath.resolve = function(source, file) {
+        if ('validSchema.js' === file && i === 0) {
+            i = 1;
+            return './test/testfiles/schema/validSchema.js';
+        }
+
+        if ('validSchema.js' === file)
+            return  './test/testfiles/model/validSchema.js';
+
+        if ('./model' === file)
+            return './test/testfiles/model';
+
+        return './test/testfiles/schema';
+    };
+    stubFs.readdirSync = function(source) {
+        if ('./test/testfiles/model' === source)
+            return ['validSchema.js'];
+
+        return ['validSchema.js'];
+    };
+    loader = proxyquire('../loader.js', {'fs': stubFs, 'path': stubPath});
+
+    loader.LoadSchemas('./schema', mongoose);
+    loader.LoadModels('./model', mongoose);
 }

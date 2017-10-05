@@ -6,6 +6,7 @@ schema.getRequiredSchemas = function() {
 };
 schema.getSchema = function(mongoose, schemas) {
     return mongoose.Schema({
+        myProp: String
     });
 };
 
