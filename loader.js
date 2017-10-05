@@ -20,6 +20,9 @@ function loadSchemas(source, mongoose) {
     schemaSource = path.resolve(root, source);
 
     fs.readdirSync(schemaSource, options).forEach(function(file) {
+        if (file.substr(-3) !== '.js')
+            return;
+
         loadRequiredSchemasAndSchema(file, mongoose);
     });
 
@@ -30,6 +33,9 @@ function loadModels(source, mongoose) {
     modelSource = path.resolve(root, source);
 
     fs.readdirSync(modelSource, options).forEach(function(file) {
+        if (file.substr(-3) !== '.js')
+            return;
+
         loadModel(file, mongoose);
     });
 

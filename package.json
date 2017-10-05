@@ -1,6 +1,6 @@
 {
   "name": "@wrpterberg/mongooseloader",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "loads all your schemas and models into mongoose for you.",
   "main": "loader.js",
   "scripts": {
@@ -22,10 +22,10 @@
     "url": "https://github.com/WterBerg/mongooseloader/issues"
   },
   "homepage": "https://github.com/WterBerg/mongooseloader#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.1.2",
-    "mocha": "^4.0.0"
+    "mocha": "^4.0.0",
+    "proxyquire": "^1.8.0"
   }
 }
