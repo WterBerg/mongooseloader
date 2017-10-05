@@ -1,4 +1,4 @@
-# mongooseloader
+# @wrpterberg/mongooseloader
 
 Allows you to easily load all your schemas and/or models into mongoose.
 
