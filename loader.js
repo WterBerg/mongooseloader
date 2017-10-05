@@ -16,21 +16,21 @@ module.exports = {
     LoadModels: loadModels
 };
 
-function loadSchemas(source) {
+function loadSchemas(source, mongoose) {
     schemaSource = path.resolve(root, source);
 
     fs.readdirSync(schemaSource, options).forEach(function(file) {
-        loadRequiredSchemasAndSchema(file);
+        loadRequiredSchemasAndSchema(file, mongoose);
     });
 
     return schemas;
 }
 
-function loadModels(source) {
+function loadModels(source, mongoose) {
     modelSource = path.resolve(root, source);
 
     fs.readdirSync(modelSource, options).forEach(function(file) {
-        loadModel(file);
+        loadModel(file, mongoose);
     });
 
     return models;
@@ -47,7 +47,7 @@ function loadRequiredSchemasAndSchema(schemaFile, mongoose) {
         if (schemas[requiredSchema])
             return;
 
-        loadRequiredSchemasAndSchema(requiredSchema + '.js');
+        loadRequiredSchemasAndSchema(requiredSchema + '.js', mongoose);
     });
 
     schemas[name] =  schema.getSchema(mongoose, schemas);

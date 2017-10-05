@@ -9,8 +9,8 @@ Allows you to easily load all your schemas and/or models into mongoose.
     var mongoose = require('mongoose');
     var mongooseloader = require('@wrpterberg/mongooseloader');
     
-    mongooseloader.LoadSchemas('./schema');
-    mongooseloader.LoadSchemas('./model');
+    mongooseloader.LoadSchemas('./schema', mongoose);
+    mongooseloader.LoadModels('./model', mongoose);
 
     console.log(mongoose);
 
@@ -33,8 +33,6 @@ All files inside your schema folder need to be schemas. Furthermore, the schemas
 
 For models the following structure is required:
 
-    'use strict';
-    
     module.exports = function(mongoose, schema) {
         var model = mongoose.model('Character', schema);
         
