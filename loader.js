@@ -1,72 +1,60 @@
 'use strict';
 
-var mongoose = require('mongoose'),
-    fs = require('fs'),
+var fs = require('fs'),
     path = require('path');
 
-var root = path.dirname(require.main.filename);
+var root = path.dirname(require.main.filename),
+    options = {encoding: 'utf8'};
 
-var schemaSource = null,
+var schemaSource,
     schemas = [],
-    modelSource = null,
+    modelSource,
     models = [];
 
-var loader = {};
+module.exports = {
+    LoadSchemas: loadSchemas,
+    LoadModels: loadModels
+};
 
-loader.LoadSchemas = function(source) {
+function loadSchemas(source) {
     schemaSource = path.resolve(root, source);
 
-    if (!fs.existsSync(schemaSource)) {
-        throw new Error('Given source does not exist.');
-    }
-
-    var schemaFiles = fs.readdirSync(schemaSource, {encoding: 'utf8'});
-
-    schemaFiles.forEach(function(file) {
+    fs.readdirSync(schemaSource, options).forEach(function(file) {
         loadRequiredSchemasAndSchema(file);
     });
 
     return schemas;
-};
-loader.LoadModels = function(source) {
+}
+
+function loadModels(source) {
     modelSource = path.resolve(root, source);
 
-    if (!fs.existsSync(modelSource)) {
-        throw new Error('Given source does not exist.');
-    }
-
-    var modelFiles = fs.readdirSync(modelSource, {encoding: 'utf8'});
-
-    modelFiles.forEach(function(file) {
+    fs.readdirSync(modelSource, options).forEach(function(file) {
         loadModel(file);
     });
 
     return models;
-};
+}
 
-module.exports = loader;
-
-function loadRequiredSchemasAndSchema(schemaFile) {
-    var file = require(schemaSource + '/' + schemaFile),
+function loadRequiredSchemasAndSchema(schemaFile, mongoose) {
+    var schema = require(path.resolve(schemaSource, schemaFile)),
         name = schemaFile.substr(0, schemaFile.indexOf('.'));
 
     if (schemas[name])
         return;
 
-    var requiredSchemas = file.getRequiredSchemas();
-
-    requiredSchemas.forEach(function(schema) {
-        if (schemas[schema])
+    schema.getRequiredSchemas().forEach(function(requiredSchema) {
+        if (schemas[requiredSchema])
             return;
 
-        loadRequiredSchemasAndSchema(schema + '.js');
+        loadRequiredSchemasAndSchema(requiredSchema + '.js');
     });
 
-    schemas[name] =  file.getSchema(mongoose, schemas);
+    schemas[name] =  schema.getSchema(mongoose, schemas);
 }
 
-function loadModel(modelFile) {
+function loadModel(modelFile, mongoose) {
     var name = modelFile.substr(0, modelFile.indexOf('.'));
 
-    models[name] = require(modelSource + '/' + modelFile)(mongoose, schemas[name]);
+    models[name] = require(path.resolve(modelSource, modelFile))(mongoose, schemas[name]);
 }
