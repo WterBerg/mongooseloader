@@ -4,8 +4,7 @@
   "description": "loads all your schemas and models into mongoose for you.",
   "main": "loader.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --reporter spec",
-    "cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*"
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
