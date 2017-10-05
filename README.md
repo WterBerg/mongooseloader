@@ -1,4 +1,5 @@
 # @wrpterberg/mongooseloader
+[![Build Status](https://travis-ci.org/WterBerg/mongooseloader.svg?branch=master)](https://travis-ci.org/WterBerg/mongooseloader)
 
 Allows you to easily load all your schemas and/or models into mongoose.
 
