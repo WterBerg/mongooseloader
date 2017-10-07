@@ -4,15 +4,22 @@
 Allows you to easily load all your schemas and/or models into mongoose.
 
 ## Installation
-`npm install @wrpterberg/mongooseloader`
+```JavaScript
+npm install @wrpterberg/mongooseloader
+```
 
 ## Usage
 ```JavaScript
 var mongoose = require('mongoose');
 var mongooseloader = require('@wrpterberg/mongooseloader');
 
-mongooseloader.LoadSchemas('./schema', mongoose);
-mongooseloader.LoadModels('./model', mongoose);
+var schemas = mongooseloader.LoadSchemas('./schema', mongoose);
+var models = mongooseloader.LoadModels('./model', mongoose);
+
+var myModel = new (models['myModel'])();
+
+var myModel = models['myModel'];
+var myObject = new myModel();
 
 console.log(mongoose);
 ```
@@ -30,7 +37,7 @@ schema.getRequiredSchemas = function() {
 schema.getSchema = function(mongoose, schemas) {
     return mongoose.Schema({
         // your model, schemas that are part of a subschema are found in schemas[schemaName] like this:
-        items: [schemas['Item']
+        items: [schemas['Item']]
     });
 }
 
@@ -50,4 +57,6 @@ module.exports = function(mongoose, schema) {
 ```
 
 ## Test
-`npm test`
+```JavaScript
+npm test
+```
