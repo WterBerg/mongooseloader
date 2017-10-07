@@ -7,40 +7,47 @@ Allows you to easily load all your schemas and/or models into mongoose.
 `npm install @wrpterberg/mongooseloader`
 
 ## Usage
-    var mongoose = require('mongoose');
-    var mongooseloader = require('@wrpterberg/mongooseloader');
-    
-    mongooseloader.LoadSchemas('./schema', mongoose);
-    mongooseloader.LoadModels('./model', mongoose);
+```JavaScript
+var mongoose = require('mongoose');
+var mongooseloader = require('@wrpterberg/mongooseloader');
 
-    console.log(mongoose);
+mongooseloader.LoadSchemas('./schema', mongoose);
+mongooseloader.LoadModels('./model', mongoose);
+
+console.log(mongoose);
+```
 
 All schemas and models are now part of your mongoose object.
 
-All files inside your schema folder need to be schemas. Furthermore, the schemas need to adhere to the following structure:
+### Schemas and Models
+All javascript files found inside the given source directory must adhere to the structure as defined below. All non-javascript files inside the source directory are ignored.
 
-    var schema = {};
-    schema.getRequiredSchemas = function() {
-        return ['Item'];
-    }
-    schema.getSchema = function(mongoose, schemas) {
-        return mongoose.Schema({
-            // your model, schemas that are part of a subschema are found in schemas[schemaName] like this:
-            items: [schemas['Item']
-        });
-    }
-    
-    module.exports = schema;
+```JavaScript
+var schema = {};
+schema.getRequiredSchemas = function() {
+    return ['Item'];
+}
+schema.getSchema = function(mongoose, schemas) {
+    return mongoose.Schema({
+        // your model, schemas that are part of a subschema are found in schemas[schemaName] like this:
+        items: [schemas['Item']
+    });
+}
 
-For models the following structure is required:
+module.exports = schema;
+```
 
-    module.exports = function(mongoose, schema) {
-        var model = mongoose.model('Character', schema);
-        
-        // model function definitions go here.
-        
-        return model;
-    };
+For models all the same rules apply, the structure they must adhere to is as below. It also requires that a schema has already been defined which names matches the model to be loaded into Mongoose.
+
+```JavaScript
+module.exports = function(mongoose, schema) {
+    var model = mongoose.model('Character', schema);
+
+    // model function definitions go here.
+
+    return model;
+};
+```
 
 ## Test
 `npm test`
