@@ -1,66 +1,112 @@
 'use strict';
 
-var fs = require('fs'),
-    path = require('path');
+const fs = require('fs'),
+      path = require('path');
 
-var root = path.dirname(require.main.filename),
-    options = {encoding: 'utf8'};
-
-var schemaSource,
-    schemas = [],
-    modelSource,
-    models = [];
+let root = process.cwd(),
+    fileReaderOptions = {
+        encoding: 'utf8'
+    },
+    schemas = {};
 
 module.exports = {
-    LoadSchemas: loadSchemas,
-    LoadModels: loadModels
+    loadSchemas: async (source, mongoose) => {
+        try {
+            source = path.resolve(root, source);
+
+            let schemaFiles = await readDir(source);
+
+            schemaFiles.forEach((file) => {
+                loadSchema(file, source, mongoose);
+            });
+
+            return schemas;
+        } catch (error) {
+            throw new Error(error);
+        }
+    },
+    loadModels: async (source, mongoose) => {
+        try {
+            source = path.resolve(root, source);
+
+            let modelFiles = await readDir(source),
+                models = {};
+
+            modelFiles.forEach((file) => {
+                loadModel(file, source, mongoose, models);
+            });
+
+            return models;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 };
 
-function loadSchemas(source, mongoose) {
-    schemaSource = path.resolve(root, source);
+function readDir(source) {
+    return new Promise((resolve, reject) => {
+        fs.readdir(source, fileReaderOptions, (err, files) => {
+            if (err) reject(err);
 
-    fs.readdirSync(schemaSource, options).forEach(function(file) {
-        if (file.substr(-3) !== '.js')
-            return;
-
-        loadRequiredSchemasAndSchema(file, mongoose);
+            resolve(files);
+        });
     });
-
-    return schemas;
 }
 
-function loadModels(source, mongoose) {
-    modelSource = path.resolve(root, source);
+function loadSchema(file, source, mongoose) {
+    if (file.substr(-3) !== '.js')
+        return;
 
-    fs.readdirSync(modelSource, options).forEach(function(file) {
-        if (file.substr(-3) !== '.js')
-            return;
-
-        loadModel(file, mongoose);
-    });
-
-    return models;
-}
-
-function loadRequiredSchemasAndSchema(schemaFile, mongoose) {
-    var schema = require(path.resolve(schemaSource, schemaFile)),
-        name = schemaFile.substr(0, schemaFile.indexOf('.'));
+    let name = file.substr(0, file.indexOf('.'));
+    let schema = require(path.resolve(source, file));
 
     if (schemas[name])
         return;
 
-    schema.getRequiredSchemas().forEach(function(requiredSchema) {
-        if (schemas[requiredSchema])
-            return;
+    if (isNotASchema(schema))
+        return;
 
-        loadRequiredSchemasAndSchema(requiredSchema + '.js', mongoose);
+    schema.getRequiredSchemas().forEach((schema) => {
+        loadSchema(schema + '.js', source, mongoose);
     });
 
-    schemas[name] =  schema.getSchema(mongoose, schemas);
+    schemas[name] = schema.getSchema(mongoose, schemas);
 }
 
-function loadModel(modelFile, mongoose) {
-    var name = modelFile.substr(0, modelFile.indexOf('.'));
+function loadModel(file, source, mongoose, models) {
+    if (file.substr(-3) !== '.js')
+        return;
 
-    models[name] = require(path.resolve(modelSource, modelFile))(mongoose, schemas[name]);
+    let name = file.substr(0, file.indexOf('.'));
+    let model = require(path.resolve(source, file));
+
+    if (!schemas[name])
+        return;
+
+    if (isNotAModel(model))
+        return model;
+
+    if (typeof model !== 'function')
+        return;
+
+    models[name] = model(mongoose, schemas[name]);
+}
+
+function isNotASchema(schema) {
+    let requiredFunctions = ['getRequiredSchemas', 'getSchema'],
+        missing = false;
+
+    requiredFunctions.map((requiredFunction) => {
+        if (!schema.hasOwnProperty(requiredFunction))
+            return missing = true;
+
+        if (typeof schema[requiredFunction] !== 'function')
+            return missing = true;
+    });
+
+    return missing;
+}
+
+function isNotAModel(model) {
+    return typeof model !== 'function';
 }

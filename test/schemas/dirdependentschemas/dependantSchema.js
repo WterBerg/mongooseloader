@@ -1,10 +1,10 @@
 'use strict';
 
-var schema = {};
-schema.getRequiredSchemas = function() {
+let schema = {};
+schema.getRequiredSchemas = () => {
     return ['dependingSchema'];
 };
-schema.getSchema = function(mongoose, schemas) {
+schema.getSchema = (mongoose, schemas) => {
     return mongoose.Schema({
         prop: schemas['dependingSchema']
     });
