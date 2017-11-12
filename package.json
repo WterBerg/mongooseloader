@@ -2,7 +2,7 @@
   "name": "@wrpterberg/mongooseloader",
   "version": "1.0.0",
   "description": "loads all your schemas and models into mongoose for you.",
-  "main": "loader.js",
+  "main": "mongooseloader.js",
   "scripts": {
     "test": "mocha --reporter spec"
   },

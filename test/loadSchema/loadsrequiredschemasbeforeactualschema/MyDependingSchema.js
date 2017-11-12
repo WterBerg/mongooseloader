@@ -2,11 +2,11 @@
 
 let schema = {};
 schema.getRequiredSchemas = () => {
-    return ['circularSchema'];
+    return ['TheRequiredSchema'];
 };
 schema.getSchema = (mongoose, schemas) => {
     return mongoose.Schema({
-        prop: schemas['circularSchema']
+        myProp: schemas['TheRequiredSchema']
     });
 };
 
