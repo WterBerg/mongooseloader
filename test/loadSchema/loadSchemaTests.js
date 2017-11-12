@@ -20,7 +20,7 @@ module.exports = {
     },
     throwsErrorOnAlreadyExistingSchema: async () => {
         try {
-            loader.setSchemaSource('./test/loadschema/throwserroronalreadyexistingschema');
+            loader.setSchemaSource('./test/loadSchema/throwserroronalreadyexistingschema');
             await loader.loadSchema('MyDocument.js');
             await loader.loadSchema('MyDocument.js');
         } catch (err) {
@@ -29,18 +29,18 @@ module.exports = {
     },
     throwsErrorOnNonSchemaJavascriptFile: async () => {
         try {
-            loader.setSchemaSource('./test/loadschema/throwserroronnonschemajavascriptfile');
+            loader.setSchemaSource('./test/loadSchema/throwserroronnonschemajavascriptfile');
             await loader.loadSchema('MyInvalidDocument.js');
         } catch (err) {
             assert.equal(err.message, 'given schema is not a schema');
         }
     },
     loadValidSchemasIntoMongoose: async () => {
-        loader.setSchemaSource('./test/loadschema/loadvalidschemasintomongoose');
+        loader.setSchemaSource('./test/loadSchema/loadvalidschemasintomongoose');
         await loader.loadSchema('MyValidDocument.js');
     },
     loadsRequiredSchemasBeforeActualSchema: async() => {
-        loader.setSchemaSource('./test/loadschema/loadsrequiredschemasbeforeactualschema');
+        loader.setSchemaSource('./test/loadSchema/loadsrequiredschemasbeforeactualschema');
         let schemas = await loader.loadSchema('MyDependingSchema.js');
 
         assert.ok(schemas['MyDependingSchema']);
