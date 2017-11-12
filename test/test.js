@@ -21,6 +21,8 @@ describe('MongooseLoader', () => {
     describe('loadSchemas(source)', () => {
         it('Should exist', loadSchemasTests.exists);
         it('Should be a function', loadSchemasTests.isFunction);
+        it('Should correctly load several schemas into mongoose', loadSchemasTests.correctlyLoadsDirIntoMongoose);
+        it('Should throw an error on a non existing directory', loadSchemasTests.throwsErrorOnNonExistingDirectory);
     });
 
     describe('loadModel(file)', () => {

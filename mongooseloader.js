@@ -1,8 +1,8 @@
 'use strict';
 
 const fs = require('fs'),
-    path = require('path'),
-    mongoose = require('mongoose');
+      path = require('path'),
+      mongoose = require('mongoose');
 
 let schemas = {},
     schemaSource = undefined,
