@@ -39,7 +39,7 @@ class MongooseLoader {
     }
 
     /**
-     * Disables all logging, this is the default.
+     * Disables all logging. Logging is disabled by default.
      */
     static disableLogging() {
         log('logging disabled.');
@@ -47,8 +47,7 @@ class MongooseLoader {
     }
 
     /**
-     * Convenience method to call both loadSchemas and loadModels.
-     * Returns a Promise indicating that mongoose contains the defined models, or an error indicating what went wrong.
+     * Convenience method to call both loadSchemas and loadModels. Returns a Promise indicating that mongoose contains the defined models, or an error indicating what went wrong.
      *
      * Note: call enableLogging() to get a detailed overview if you encounter problems.
      *
@@ -56,13 +55,19 @@ class MongooseLoader {
      */
     static async load(sources) {
         await MongooseLoader.loadSchemas(sources[0]);
-        await MongooseLoader.loadModels(sources[1]);
+
+        return await MongooseLoader.loadModels(sources[1]);
     }
 
     /**
+     * Loads all the schemas found in the given directory into mongoose and returns them as a Promise.
+     *
+     * The Promise will reject if an error occurs while reading the directory, or if the given source is not a directory.
+     *
+     * Note: call enableLogging() to get a detailed overview if you encounter problems.
      *
      * @param source A String containing the source of the schemas
-     * @returns {Promise.<{}>}
+     * @returns {Promise.<{}>} Returns a Promise that resolves with an array of all the schemas loaded, or an error message detailing what went wrong.
      */
     static async loadSchemas(source) {
         try {
@@ -88,9 +93,17 @@ class MongooseLoader {
     }
 
     /**
+     * Loads the schema found in the given file into mongoose and its required schemas into mongoose and returns the original schema as a Promise.
      *
-     * @param file
-     * @returns {Promise.<*>}
+     * The returned Promise rejects if
+     * - The file does not have the '.js' extension
+     * - A schema is already defined with that name
+     * - If the file does not contain a mongoose schema
+     *
+     * Note: call enableLogging() to get a detailed overview if you encounter problems.
+     *
+     * @param file A filename relative to the schemaSource to load as a schema.
+     * @returns {Promise.<*>} Returns a Promise that resolves with the given schema, or rejects with a detailed error message.
      */
     static async loadSchema(file) {
         log(`[loadSchema] loading ${file}`);
@@ -124,9 +137,14 @@ class MongooseLoader {
     }
 
     /**
+     * Loads all the models found in the given directory into mongoose and returns them as a Promise.
      *
-     * @param source
-     * @returns {Promise.<{}>}
+     * The Promise will reject if an error occurs while reading the directory, or if the given source is not a directory.
+     *
+     * Note: call enableLogging() to get a detailed overview if you encounter problems.
+     *
+     * @param source A String containing the source of the models
+     * @returns {Promise.<{}>} Returns a Promise that resolves with an array of all the models loaded, or an error message detailing what went wrong.
      */
     static async loadModels(source) {
         try {
@@ -152,9 +170,18 @@ class MongooseLoader {
     }
 
     /**
+     * Loads the model found in the given file into mongoose and returns the model in a Promise.
      *
-     * @param file
-     * @returns {Promise.<*>}
+     * The returned Promise rejects if
+     * - The file does not have the '.js' extension
+     * - There is no schema that corresponds to the given model
+     * - There already is a model with the given name
+     * - The contents of the file is not a model
+     *
+     * Note: call enableLogging() to get a detailed overview if you encounter problems.
+     *
+     * @param file A filename relative to the modelSource to load as a schema.
+     * @returns {Promise.<*>} Returns a Promise that resolves with the given model, or rejects with a detailed error message.
      */
     static async loadModel(file) {
         log(`[loadModel] loading ${file}`);
