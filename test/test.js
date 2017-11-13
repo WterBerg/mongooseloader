@@ -28,16 +28,24 @@ describe('MongooseLoader', () => {
     describe('loadModel(file)', () => {
         it('Should exist', loadModelTests.loadExists);
         it('Should be a function', loadModelTests.loadIsFunction);
+        it('Should throw an error on a non javascript file', loadModelTests.throwsErrorOnNonJSFile);
+        it('Should throw an error when no corresponding schema is defined', loadModelTests.throwsErrorOnNonSchemaModel);
+        it('Should throw an error if a model already exists with that name');
+        it('Should throw an error is the given model is not a model');
+        it('Should load a valid model into mongoose');
     });
 
     describe('loadModels(source)', () => {
         it('Should exist', loadModelsTests.loadExists);
         it('Should be a function', loadModelsTests.loadIsFunction);
+        it('Should correctly load several models into mongoose', loadModelsTests.correctlyLoadsDirIntoMongoose);
+        it('Should throw an error on a non existing directory', loadModelsTests.throwsErrorOnNonExistingDirectory);
     });
 
     describe('load(sources)', () => {
         it('Should exist', loadTests.loadExists);
         it('Should be a function', loadTests.loadIsFunction);
+        it('Should return a list of models upon success', loadTests.returnsModelsOnSuccess);
     });
 
 });

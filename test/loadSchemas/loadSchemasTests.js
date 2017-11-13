@@ -14,6 +14,7 @@ module.exports = {
         let schemas = await loader.loadSchemas('./test/loadSchemas/correctlyloadsdirintomongoose');
 
         assert.ok(schemas['MyVeryValidDocument']);
+        assert.ok(schemas['AnotherValidDocument']);
     },
     throwsErrorOnNonExistingDirectory: async () => {
         try {
@@ -22,6 +23,5 @@ module.exports = {
         } catch (err) {
             assert.ok(err.message.startsWith('ENOENT: no such file or directory'));
         }
-
     }
 };
