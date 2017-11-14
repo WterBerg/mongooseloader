@@ -4,11 +4,18 @@ const assert = require('assert'),
       loader = require('../../mongooseloader.js');
 
 module.exports = {
-    loadExists: () => {
+    exists: () => {
         assert.ok(loader.hasOwnProperty('loadModels'));
     },
-    loadIsFunction: () => {
+    isFunction: () => {
         assert.ok(typeof loader.loadModels === 'function');
+    },
+    ignoresNonModelsFoundInSource: async () => {
+        try {
+            await loader.loadModels('./test/loadModels/ignoresnonmodelsfoundinsource');
+        } catch (err) {
+            assert.fail(err.message);
+        }
     },
     correctlyLoadsDirIntoMongoose: async () => {
         try {

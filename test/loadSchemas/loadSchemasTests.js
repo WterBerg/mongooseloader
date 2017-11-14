@@ -10,6 +10,13 @@ module.exports = {
     isFunction: () => {
         assert.ok(typeof loader.loadSchemas === 'function');
     },
+    ignoresNonSchemasFoundInSource: async () => {
+        try {
+            await loader.loadSchemas('./test/loadSchemas/ignoresnonschemasfoundinsource');
+        } catch (err) {
+            assert.fail(err.message);
+        }
+    },
     correctlyLoadsDirIntoMongoose: async () => {
         try {
             let schemas = await loader.loadSchemas('./test/loadSchemas/correctlyloadsdirintomongoose');

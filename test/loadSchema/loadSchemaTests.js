@@ -50,6 +50,16 @@ module.exports = {
             assert.fail(err.message);
         }
     },
+    ignoresFaultyRequiredSchemas: async () => {
+        try {
+            loader.setSchemaSource('./test/loadSchema/ignoresfaultyrequiredschemas');
+            let schemas = await loader.loadSchema('FaultyRequiredSchema.js');
+
+            assert.equal(schemas['ImRequired'], undefined);
+        } catch (err) {
+            assert.fail(err.message);
+        }
+    },
     loadsRequiredSchemasBeforeActualSchema: async() => {
         try {
             loader.setSchemaSource('./test/loadSchema/loadsrequiredschemasbeforeactualschema');

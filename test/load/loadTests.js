@@ -4,10 +4,10 @@ const assert = require('assert'),
       loader = require('../../mongooseloader.js');
 
 module.exports = {
-    loadExists: () => {
+    exists: () => {
         assert.ok(loader.hasOwnProperty('load'));
     },
-    loadIsFunction: () => {
+    isFunction: () => {
         assert.ok(typeof loader.load === 'function');
     },
     returnsModelsOnSuccess: async () => {
