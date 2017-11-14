@@ -22,7 +22,9 @@
     "url": "https://github.com/WterBerg/mongooseloader/issues"
   },
   "homepage": "https://github.com/WterBerg/mongooseloader#readme",
-  "dependencies": {},
+  "dependencies": {
+    "mongoose": "^4.12.0"
+  },
   "devDependencies": {
     "mocha": "^4.0.0",
     "mongoose": "^4.12.0",
