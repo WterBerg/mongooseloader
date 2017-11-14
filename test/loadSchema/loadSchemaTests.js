@@ -5,14 +5,15 @@ const assert = require('assert'),
 
 module.exports = {
     exists: async () => {
-        return loader.hasOwnProperty('loadSchema');
+        assert.ok(loader.hasOwnProperty('loadSchema'));
     },
     isFunction: async () => {
-        return typeof loader.loadSchema === 'function';
+        assert.ok(typeof loader.loadSchema === 'function');
     },
     throwsErrorOnNonJSFile: async () => {
         try {
             await loader.loadSchema('test.png');
+
             assert.fail('No error thrown');
         } catch (err) {
             assert.equal(err.message, 'file is not a javascript file');
@@ -23,6 +24,8 @@ module.exports = {
             loader.setSchemaSource('./test/loadSchema/throwserroronalreadyexistingschema');
             await loader.loadSchema('MyDocument.js');
             await loader.loadSchema('MyDocument.js');
+
+            assert.fail('no error thrown');
         } catch (err) {
             assert.equal(err.message, 'a schema already exists with name MyDocument');
         }
@@ -31,19 +34,31 @@ module.exports = {
         try {
             loader.setSchemaSource('./test/loadSchema/throwserroronnonschemajavascriptfile');
             await loader.loadSchema('MyInvalidDocument.js');
+
+            assert.fail('No error thrown');
         } catch (err) {
             assert.equal(err.message, 'given schema is not a schema');
         }
     },
     loadValidSchemasIntoMongoose: async () => {
-        loader.setSchemaSource('./test/loadSchema/loadvalidschemasintomongoose');
-        await loader.loadSchema('MyValidDocument.js');
+        try {
+            loader.setSchemaSource('./test/loadSchema/loadvalidschemasintomongoose');
+            let schemas = await loader.loadSchema('MyValidDocument.js');
+
+            assert.ok(schemas['MyValidDocument']);
+        } catch (err) {
+            assert.fail(err.message);
+        }
     },
     loadsRequiredSchemasBeforeActualSchema: async() => {
-        loader.setSchemaSource('./test/loadSchema/loadsrequiredschemasbeforeactualschema');
-        let schemas = await loader.loadSchema('MyDependingSchema.js');
+        try {
+            loader.setSchemaSource('./test/loadSchema/loadsrequiredschemasbeforeactualschema');
+            let schemas = await loader.loadSchema('MyDependingSchema.js');
 
-        assert.ok(schemas['MyDependingSchema']);
-        assert.ok(schemas['TheRequiredSchema']);
+            assert.ok(schemas['MyDependingSchema']);
+            assert.ok(schemas['TheRequiredSchema']);
+        } catch (err) {
+            assert.fail(err.message);
+        }
     }
 };

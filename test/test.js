@@ -30,9 +30,9 @@ describe('MongooseLoader', () => {
         it('Should be a function', loadModelTests.loadIsFunction);
         it('Should throw an error on a non javascript file', loadModelTests.throwsErrorOnNonJSFile);
         it('Should throw an error when no corresponding schema is defined', loadModelTests.throwsErrorOnNonSchemaModel);
-        it('Should throw an error if a model already exists with that name');
-        it('Should throw an error is the given model is not a model');
-        it('Should load a valid model into mongoose');
+        it('Should throw an error if a model already exists with that name', loadModelTests.throwsErrorOnAlreadyExistingModel);
+        it('Should throw an error is the given model is not a model', loadModelTests.throwsErrorOnNonModelJavascriptFile);
+        it('Should load a valid model into mongoose', loadModelTests.loadValidModelIntoMongoose);
     });
 
     describe('loadModels(source)', () => {

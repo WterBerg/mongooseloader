@@ -5,19 +5,23 @@ const assert = require('assert'),
 
 module.exports = {
     loadExists: () => {
-        return loader.hasOwnProperty('load');
+        assert.ok(loader.hasOwnProperty('load'));
     },
     loadIsFunction: () => {
-        return typeof loader.load === 'function';
+        assert.ok(typeof loader.load === 'function');
     },
     returnsModelsOnSuccess: async () => {
-        let models = await loader.load(
-            [
-                './test/load/returnsmodelsuponsuccess/schemas',
-                './test/load/returnsmodelsuponsuccess/models'
-            ]
-        );
+        try {
+            let models = await loader.load(
+                [
+                    './test/load/returnsmodelsuponsuccess/schemas',
+                    './test/load/returnsmodelsuponsuccess/models'
+                ]
+            );
 
-        assert.ok(models['MyLoadDocument']);
+            assert.ok(models['MyLoadDocument']);
+        } catch (err) {
+            assert.fail(err.message);
+        }
     }
 };
